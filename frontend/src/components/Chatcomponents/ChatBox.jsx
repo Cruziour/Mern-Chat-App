@@ -18,7 +18,7 @@ import { useForm } from 'react-hook-form';
 import io from 'socket.io-client';
 
 const ENDPOINT = import.meta.env.VITE_BACKEND_URL;
-let socket, selectedChatCompare;
+let socket;
 
 const ChatBox = () => {
   const dispatch = useDispatch();
