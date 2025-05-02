@@ -17,7 +17,7 @@ import { useForm } from 'react-hook-form';
 // Socket io
 import io from 'socket.io-client';
 
-const ENDPOINT = 'http://localhost:8081';
+const ENDPOINT = import.meta.env.VITE_BACKEND_URL;
 let socket, selectedChatCompare;
 
 const ChatBox = () => {
