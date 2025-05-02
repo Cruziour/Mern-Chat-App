@@ -119,6 +119,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
+    sameSite: 'None',
   };
   const userData = await User.findById(user._id).select(
     '-password -refreshToken'
@@ -173,6 +174,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const options = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
+      sameSite: 'None',
     };
     const { accessToken, refreshToken: newRefreshToken } =
       await generateAccessAndRefreshToken(user?._id);
