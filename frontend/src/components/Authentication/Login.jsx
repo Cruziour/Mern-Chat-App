@@ -28,7 +28,7 @@ const Login = () => {
       setIsLoading(true);
       setError(null);
       const response = await loginService(data);
-      dispatch(loginSuccess(response.data));
+      dispatch(loginSuccess(response?.data));
       navigate('/chatpage', { replace: true });
       reset();
     } catch (error) {
