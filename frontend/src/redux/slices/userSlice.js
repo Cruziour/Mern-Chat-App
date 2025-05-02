@@ -17,10 +17,10 @@ const userSlice = createSlice({
       localStorage.setItem('user', JSON.stringify(action.payload.user));
       localStorage.setItem('accessToken', action.payload.accessToken)
     },
-    logout: (state) => {
-      state.user = null;
-      localStorage.removeItem('user');
-    },
+logout: (state) => {
+  state.user = null;
+  localStorage.clear();
+},
   },
 });
 

@@ -26,7 +26,7 @@ connectDB()
     });
 
     io.on('connection', (socket) => {
-      console.log(`Socket connected: ${socket.id}`);
+      // console.log(`Socket connected: ${socket.id}`);
 
       socket.on('setup', (userData) => {
         socket.join(userData?._id);
@@ -42,10 +42,10 @@ connectDB()
       socket.on('stop typing', (room) => socket.in(room).emit('stop typing'));
 
       socket.on('new message', (newMessageRecieved) => {
-        console.log(newMessageRecieved, 'xchbb');
+        // console.log(newMessageRecieved, 'xchbb');
 
         let chat = newMessageRecieved?.chat;
-        if (!chat.users) return console.log('Chat Users not defined');
+        if (!chat.users) return 
 
         chat?.users.forEach((user) => {
           if (user?._id == newMessageRecieved?.sender._id) return;

@@ -19,5 +19,5 @@ const chatsAllUserSlice = createSlice({
   },
 });
 
-export const { setChatAllUsers } = chatsAllUserSlice.actions;
+export const { setChatAllUsers, resetChatsAllUser } = chatsAllUserSlice.actions;
 export default chatsAllUserSlice.reducer;

@@ -92,12 +92,9 @@ const ChatBox = () => {
     setLoading(true);
     try {
       const data = await fetchMessagesService(selectedChat._id);
-      console.log(data);
-
       dispatch(setMessages({ chatId: selectedChat._id, messages: data.data }));
       socket.emit('join chat', selectedChat?._id);
     } catch (error) {
-      console.log(error);
       // Toast removed as per request
       dispatch(setMessages({ chatId: selectedChat._id, messages: [] }));
     }
@@ -109,6 +106,7 @@ const ChatBox = () => {
     loadMessages();
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
+
 
   useEffect(() => {
     const messageHandler = (newMessageRecieved) => {

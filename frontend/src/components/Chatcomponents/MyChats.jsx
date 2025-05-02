@@ -46,7 +46,19 @@ const MyChats = () => {
       }
     };
     getChats();
-  }, [dispatch]);
+  }, [dispatch, loggedInUser, chatsAllUser]);
+
+  const selectedUser = useSelector((state) => state.selectedUser?.selectedUser);
+
+  // Remove automatic selection of first chat on login to prevent auto-opening chatbox
+  // User must manually select a chat to open chatbox
+  // Commenting out the auto-selection effect
+
+  // useEffect(() => {
+  //   if (!selectedUser && chatsAllUser && chatsAllUser.length > 0) {
+  //     dispatch(setSelectedUser(chatsAllUser[0]));
+  //   }
+  // }, [selectedUser,chatsAllUser, dispatch]);
 
   const handleProfileClick = (user) => {
     setProfileUser(user);
