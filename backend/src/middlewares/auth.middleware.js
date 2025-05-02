@@ -19,9 +19,7 @@ const verifyJwt = asyncHandler(async (req, _, next) => {
     const user = await User.findById(decodedToken?._id).select(
       '-password -refreshToken'
     );
-    console.log(user, 'user');
-    
-
+ 
     if (!user) {
       return next(new ApiError(401, 'Unauthorized'));
     }
