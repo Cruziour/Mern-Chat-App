@@ -3,6 +3,7 @@ import verifyJwt from '../middlewares/auth.middleware.js';
 import { upload } from '../middlewares/multer.middleware.js';
 import {
   allUsers,
+  forgetPassword,
   loginUser,
   logoutUser,
   refreshAccessToken,
@@ -20,5 +21,6 @@ router
 router.route('/login').post(loginUser);
 router.route('/refresh-token').post(refreshAccessToken);
 router.route('/logout').post(verifyJwt, logoutUser);
+router.route('/forget-password').patch(verifyJwt, forgetPassword);
 
 export default router;

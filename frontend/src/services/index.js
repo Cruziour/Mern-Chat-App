@@ -20,7 +20,9 @@ export async function logoutService() {
 }
 
 export async function refreshAccessTokenService(refreshToken) {
-  const { data } = await axiosInstance.post('/api/v1/user/refresh-token', { refreshToken });
+  const { data } = await axiosInstance.post('/api/v1/user/refresh-token', {
+    refreshToken,
+  });
   return data;
 }
 
@@ -52,5 +54,10 @@ export async function fetchMessagesService(chatId) {
 
 export async function sendMessageSerive(messageData) {
   const { data } = await axiosInstance.post('/api/v1/message', messageData);
+  return data;
+}
+
+export async function forgetPassword(formData) {
+  const { data } = await axiosInstance.patch('/api/v1/user/forget-password', formData);
   return data;
 }

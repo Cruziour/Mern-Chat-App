@@ -115,6 +115,10 @@ const SideDrawer = () => {
     }
   };
 
+  const handleResetClick = () => {
+    navigate('/reset-password')
+  }
+
   const createChat = async (user) => {
     try {
       const response = await createChatService({ userId: user._id });
@@ -239,11 +243,16 @@ const SideDrawer = () => {
               onClick={toggleProfileDropdown}
             />
             {showProfileDropdown && (
-              <div className="absolute right-0 mt-2 w-32 bg-white rounded shadow-lg py-2 z-50">
+              <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg py-2 z-50">
                 <Button
                   btnName="Profile"
                   btnClass="block w-full text-left px-4 py-2 hover:bg-gray-100"
                   onClick={handleProfileClick}
+                />
+                <Button
+                  btnName="Reset Password"
+                  btnClass="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  onClick={handleResetClick}
                 />
                 <Button
                   btnName="Logout"

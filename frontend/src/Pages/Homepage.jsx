@@ -12,7 +12,7 @@ const Homepage = () => {
           <h1 className="text-2xl md:text-3xl lg:text-2xl font-light">
             Online Chating App
           </h1>
-        </div>
+        </div>7
 
         {/* Tabs */}
         <div className="flex border rounded-2xl overflow-hidden">

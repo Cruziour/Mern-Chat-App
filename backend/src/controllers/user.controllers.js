@@ -126,7 +126,13 @@ const loginUser = asyncHandler(async (req, res) => {
   );
   return res
     .status(200)
-    .json(new ApiResponse(200, { user: userData, accessToken }, 'User logged in successfully'));
+    .json(
+      new ApiResponse(
+        200,
+        { user: userData, accessToken },
+        'User logged in successfully'
+      )
+    );
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
@@ -147,6 +153,44 @@ const logoutUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, {}, 'User logged out successfully.'));
+});
+
+const forgetPassword = asyncHandler(async (req, res) => {
+  const { oldPassword, newPassword, confirmPassword } = req.body;
+
+  if (!oldPassword || !newPassword || !confirmPassword) {
+    throw new ApiError(400, 'All fields are required');
+  }
+
+  if (newPassword !== confirmPassword) {
+    throw new ApiError(400, 'New password and confirm password do not match');
+  }
+
+  // Find logged-in user
+  const user = await User.findById(req.user?._id);
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  // Check if old password is correct
+  const isValidPassword = await user.isPasswordCorrect(oldPassword);
+  if (!isValidPassword) {
+    throw new ApiError(401, 'Old password is incorrect');
+  }
+
+  // Prevent setting the same password
+  if (oldPassword === newPassword) {
+    throw new ApiError(400, 'New password must be different from old password');
+  }
+
+  // Update password
+  user.password = newPassword;
+
+  await user.save({ validateBeforeSave: true });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, 'Password updated successfully'));
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
@@ -230,4 +274,4 @@ const allUsers = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, users, 'Users retrieved successfully'));
 });
 
-export { registerUser, loginUser, logoutUser, allUsers, refreshAccessToken };
+export { registerUser, loginUser, logoutUser, allUsers, refreshAccessToken, forgetPassword };

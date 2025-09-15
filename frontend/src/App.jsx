@@ -11,10 +11,11 @@ import NotFound from './Pages/NotFound';
 import Layout from './Layout';
 import RouteGuard from './components/route-guard';
 import { useSelector } from 'react-redux';
+import ForgetPassword from './components/miscellaneous/ForgetPassword';
 
 const App = () => {
   const user = useSelector((state) => state.user?.user);
-  
+
   const authenticated = !!user?._id;
 
   const router = createBrowserRouter(
@@ -33,6 +34,14 @@ const App = () => {
           element={
             <RouteGuard authenticated={authenticated} requiredAuth={true}>
               <Chatpage />
+            </RouteGuard>
+          }
+        />
+        <Route
+          path="reset-password"
+          element={
+            <RouteGuard authenticated={authenticated} requiredAuth={true}>
+              <ForgetPassword />
             </RouteGuard>
           }
         />

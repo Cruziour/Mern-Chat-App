@@ -110,7 +110,7 @@ const ChatBox = () => {
 
   useEffect(() => {
     const messageHandler = (newMessageRecieved) => {
-      console.log('Received message:', newMessageRecieved);
+      // console.log('Received message:', newMessageRecieved);
       // Temporarily remove chat check to test receiving messages
       dispatch(
         addMessage({
@@ -142,7 +142,7 @@ const ChatBox = () => {
     socket.emit('stop typing', selectedChat?._id);
     try {
       const sentMessage = await sendMessageSerive(messageData);
-      console.log(sentMessage);
+      // console.log(sentMessage);
 
       dispatch(
         addMessage({ chatId: selectedChat._id, message: sentMessage.data })
