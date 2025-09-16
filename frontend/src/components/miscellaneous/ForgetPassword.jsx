@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // 👈 FontAwesome icons
 import { forgetPassword } from '../../services';
 
 const ForgetPassword = () => {
@@ -16,19 +17,23 @@ const ForgetPassword = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // Password visibility states
+  const [showOld, setShowOld] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
   const onSubmit = async (data) => {
     setSuccess('');
     setError('');
     try {
       const responseData = await forgetPassword(data);
-      console.log(responseData);
-      
 
       if (responseData?.statusCode === 200) {
         setSuccess(responseData.message || 'Password updated successfully ✅');
         reset();
-        // Agar reset ke baad navigate karna hai toh uncomment kar do
-        // navigate('/chatpage');
+        setTimeout(() => {
+          navigate('/chatpage');
+        }, 2000);
       } else {
         setError(responseData.message || 'Old password is incorrect ❌');
       }
@@ -45,7 +50,6 @@ const ForgetPassword = () => {
   const newPassword = watch('newPassword');
   const confirmPassword = watch('confirmPassword');
 
-  // Extra disable condition
   const isButtonDisabled =
     !isValid || oldPassword === newPassword || newPassword !== confirmPassword;
 
@@ -59,23 +63,28 @@ const ForgetPassword = () => {
           Reset Password
         </h2>
 
-        {/* Success and Error Messages */}
         {success && <p className="text-green-600 text-sm mb-2">{success}</p>}
         {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
 
         {/* Old Password */}
-        <div className="mb-3">
+        <div className="mb-3 relative">
           <label className="block mb-1 font-medium text-black">
             Old Password
           </label>
           <input
-            type="password"
+            type={showOld ? 'text' : 'password'}
             {...register('oldPassword', {
               required: 'Old password is required',
             })}
-            className="w-full border rounded-md px-3 py-2 border-black text-black"
+            className="w-full border rounded-md px-3 py-2 border-black text-black pr-10"
             placeholder="Enter old password"
           />
+          <span
+            className="absolute right-3 top-9 cursor-pointer text-gray-600"
+            onClick={() => setShowOld(!showOld)}
+          >
+            {showOld ? <FaEye size={20} /> : <FaEyeSlash size={20} />}
+          </span>
           {errors.oldPassword && (
             <p className="text-red-500 text-sm mb-2">
               {errors.oldPassword.message}
@@ -84,12 +93,12 @@ const ForgetPassword = () => {
         </div>
 
         {/* New Password */}
-        <div className="mb-3">
+        <div className="mb-3 relative">
           <label className="block mb-1 font-medium text-black">
             New Password
           </label>
           <input
-            type="password"
+            type={showNew ? 'text' : 'password'}
             {...register('newPassword', {
               required: 'New password is required',
               minLength: {
@@ -100,9 +109,15 @@ const ForgetPassword = () => {
                 value !== oldPassword ||
                 'New password must be different from old password',
             })}
-            className="w-full border rounded-md px-3 py-2 border-black text-black"
+            className="w-full border rounded-md px-3 py-2 border-black text-black pr-10"
             placeholder="Enter new password"
           />
+          <span
+            className="absolute right-3 top-9 cursor-pointer text-gray-600"
+            onClick={() => setShowNew(!showNew)}
+          >
+            {showNew ? <FaEye size={20} /> : <FaEyeSlash size={20} />}
+          </span>
           {errors.newPassword && (
             <p className="text-red-500 text-sm mb-2">
               {errors.newPassword.message}
@@ -111,12 +126,12 @@ const ForgetPassword = () => {
         </div>
 
         {/* Confirm Password */}
-        <div className="mb-4">
+        <div className="mb-4 relative">
           <label className="block mb-1 font-medium text-black">
             Confirm Password
           </label>
           <input
-            type="password"
+            type={showConfirm ? 'text' : 'password'}
             {...register('confirmPassword', {
               required: 'Confirm password is required',
               minLength: {
@@ -126,9 +141,15 @@ const ForgetPassword = () => {
               validate: (value) =>
                 value === newPassword || 'Passwords do not match',
             })}
-            className="w-full border rounded-md px-3 py-2 border-black text-black"
+            className="w-full border rounded-md px-3 py-2 border-black text-black pr-10"
             placeholder="Confirm new password"
           />
+          <span
+            className="absolute right-3 top-9 cursor-pointer text-gray-600"
+            onClick={() => setShowConfirm(!showConfirm)}
+          >
+            {showConfirm ? <FaEye size={20} /> : <FaEyeSlash size={20} />}
+          </span>
           {errors.confirmPassword && (
             <p className="text-red-500 text-sm mb-2">
               {errors.confirmPassword.message}

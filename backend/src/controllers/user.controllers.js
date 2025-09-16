@@ -274,4 +274,11 @@ const allUsers = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, users, 'Users retrieved successfully'));
 });
 
-export { registerUser, loginUser, logoutUser, allUsers, refreshAccessToken, forgetPassword };
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  allUsers,
+  refreshAccessToken,
+  forgetPassword,
+};
