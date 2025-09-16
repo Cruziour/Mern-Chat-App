@@ -30,7 +30,10 @@ const EditProfile = () => {
         alert('Update Profile Successfully ✅');
 
         // Save updated user to localStorage
-        // localStorage.setItem('user', JSON.stringify(response?.data));
+        let user = JSON.parse(localStorage.getItem('user')) || {};
+        user.name = response.data.name;
+        user.pic = response.data.pic;
+        localStorage.setItem('user', JSON.stringify(user));
 
         setTimeout(() => {
           navigate('/chatpage');
