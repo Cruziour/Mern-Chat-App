@@ -74,6 +74,7 @@ const registerUser = asyncHandler(async (req, res) => {
       email: email.toLowerCase().trim(),
       password,
       pic: pic?.secure_url,
+      picPublicId: pic?.public_id,
     });
 
     if (!user || !user._id) {
@@ -274,6 +275,115 @@ const allUsers = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, users, 'Users retrieved successfully'));
 });
 
+// const updateProfile = asyncHandler(async (req, res) => {
+//   if (!req.body) {
+//     throw new ApiError(400, 'Request body is required');
+//   }
+
+//   const { name } = req.body;
+//   const user = await User.findById(req.user?._id);
+
+//   if (!user) {
+//     throw new ApiError(404, 'User not found');
+//   }
+
+//   let newImageUrl = user.pic; // default = old image
+//   let newImagePublicId = user.picPublicId;
+//   let uploadedPic;
+
+//   try {
+//     // ✅ Handle image upload if file provided
+//     if (req.file?.path) {
+//       console.log(req.file.path);
+
+//       uploadedPic = await uploadOnCloudinary(req.file.path);
+
+//       if (!uploadedPic?.secure_url) {
+//         throw new ApiError(500, 'Failed to upload avatar');
+//       }
+
+//       // ✅ Update fields
+//       if (name) user.name = name;
+//       user.pic = uploadedPic?.secure_url || newImageUrl;
+//       user.picPublicId = uploadedPic?.public_id || newImagePublicId;
+
+//       await user.save({ validateBeforeSave: false });
+//       await deleteFromCloudinary(newImagePublicId);
+
+//       return res
+//         .status(200)
+//         .json(
+//           new ApiResponse(
+//             200,
+//             { name: user.name, pic: user.pic },
+//             'Profile updated successfully'
+//           )
+//         );
+//     }
+//   } catch (err) {}
+// });
+
+const updateProfile = asyncHandler(async (req, res) => {
+  if (!req.body && !req.file) {
+    throw new ApiError(400, 'Nothing to update');
+  }
+
+  const { name } = req.body;
+  const user = await User.findById(req.user?._id);
+
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  let oldImagePublicId = user.picPublicId;
+  let uploadedPic;
+
+  try {
+    // ✅ Update name if provided
+    if (name && name.trim() !== '') {
+      user.name = name.trim();
+    }
+
+    // ✅ If new image uploaded → upload to Cloudinary
+    if (req.file?.path) {
+      uploadedPic = await uploadOnCloudinary(req.file.path);
+
+      if (!uploadedPic?.secure_url) {
+        throw new ApiError(500, 'Failed to upload avatar');
+      }
+
+      // ✅ Update user image fields
+      user.pic = uploadedPic.secure_url;
+      user.picPublicId = uploadedPic.public_id;
+    }
+
+    await user.save({ validateBeforeSave: false });
+
+    // ✅ Delete old Cloudinary image (only if new one uploaded)
+    if (uploadedPic && oldImagePublicId) {
+      await deleteFromCloudinary(oldImagePublicId);
+    }
+
+    const updatedUser = await User.findById(user._id).select(
+      '-password -refreshToken'
+    );
+
+    return res
+      .status(201)
+      .json(new ApiResponse(201, updatedUser, 'Profile updated successfully'));
+  } catch (err) {
+    console.error('Update profile error:', err);
+
+    // Rollback: delete newly uploaded image if save failed
+    if (uploadedPic?.public_id) {
+      await deleteFromCloudinary(uploadedPic.public_id);
+    }
+
+    throw new ApiError(500, 'Something went wrong while updating profile');
+  }
+});
+
+
 export {
   registerUser,
   loginUser,
@@ -281,4 +391,5 @@ export {
   allUsers,
   refreshAccessToken,
   forgetPassword,
+  updateProfile,
 };

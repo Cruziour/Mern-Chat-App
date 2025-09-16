@@ -12,6 +12,7 @@ import Layout from './Layout';
 import RouteGuard from './components/route-guard';
 import { useSelector } from 'react-redux';
 import ForgetPassword from './components/miscellaneous/ForgetPassword';
+import EditProfile from './components/miscellaneous/EditProfile';
 
 const App = () => {
   const user = useSelector((state) => state.user?.user);
@@ -42,6 +43,14 @@ const App = () => {
           element={
             <RouteGuard authenticated={authenticated} requiredAuth={true}>
               <ForgetPassword />
+            </RouteGuard>
+          }
+        />
+        <Route
+          path="edit-profile"
+          element={
+            <RouteGuard authenticated={authenticated} requiredAuth={true}>
+              <EditProfile />
             </RouteGuard>
           }
         />

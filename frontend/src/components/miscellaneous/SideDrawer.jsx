@@ -118,6 +118,9 @@ const SideDrawer = () => {
   const handleResetClick = () => {
     navigate('/reset-password')
   }
+  const handleUpdateProfileClick = () => {
+    navigate('/edit-profile')
+  }
 
   const createChat = async (user) => {
     try {
@@ -253,6 +256,11 @@ const SideDrawer = () => {
                   btnName="Reset Password"
                   btnClass="block w-full text-left px-4 py-2 hover:bg-gray-100"
                   onClick={handleResetClick}
+                />
+                <Button
+                  btnName="Update Profile"
+                  btnClass="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  onClick={handleUpdateProfileClick}
                 />
                 <Button
                   btnName="Logout"

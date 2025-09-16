@@ -61,3 +61,12 @@ export async function forgetPassword(formData) {
   const { data } = await axiosInstance.patch('/api/v1/user/forget-password', formData);
   return data;
 }
+
+export async function updateUserService(formData) {
+  const { data } = await axiosInstance.patch('/api/v1/user/update', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data', // Important for sending files
+    },
+  });
+  return data;
+}

@@ -8,6 +8,7 @@ import {
   logoutUser,
   refreshAccessToken,
   registerUser,
+  updateProfile,
 } from '../controllers/user.controllers.js';
 
 const router = Router();
@@ -22,5 +23,6 @@ router.route('/login').post(loginUser);
 router.route('/refresh-token').post(refreshAccessToken);
 router.route('/logout').post(verifyJwt, logoutUser);
 router.route('/forget-password').patch(verifyJwt, forgetPassword);
+router.route('/update').patch(verifyJwt, upload.single('image'), updateProfile);
 
 export default router;
