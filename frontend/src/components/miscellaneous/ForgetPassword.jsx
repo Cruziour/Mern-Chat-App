@@ -30,7 +30,6 @@ const ForgetPassword = () => {
       if (responseData?.statusCode === 200) {
         setSuccess(responseData.message || 'Password updated successfully ✅');
         reset();
-        setTimeout(() => navigate('/chatpage'), 2000);
       } else {
         setError(responseData.message || 'Old password is incorrect ❌');
       }

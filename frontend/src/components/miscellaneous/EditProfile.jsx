@@ -29,11 +29,12 @@ const EditProfile = () => {
   const serviceUpdateUser = async (formData) => {
     try {
       const response = await updateUserService(formData);
+
       if (response.statusCode === 201) {
+        // ✅ Update user object in localStorage
+        const updatedUser = response?.data; // make sure your backend sends updated user data
+        localStorage.setItem('user', JSON.stringify(updatedUser));
         alert('Update Profile Successfully ✅');
-        setTimeout(() => {
-          navigate('/chatpage');
-        }, 1500);
       }
     } catch (error) {
       alert(error.message);
