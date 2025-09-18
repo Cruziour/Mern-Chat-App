@@ -181,7 +181,7 @@ const ForgetPassword = () => {
               onClick={handleClear}
               className="w-full py-2 rounded-lg mt-3 text-gray-700 border border-gray-400 hover:bg-gray-100 font-medium transition"
             >
-              Cancel
+              Clear
             </button>
           </form>
         </div>
