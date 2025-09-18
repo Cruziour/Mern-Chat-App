@@ -38,7 +38,7 @@ const ForgetPassword = () => {
     }
   };
 
-  const handleCancel = () => navigate('/chatpage');
+  const handleClear = () => reset();
 
   const oldPassword = watch('oldPassword');
   const newPassword = watch('newPassword');
@@ -178,7 +178,7 @@ const ForgetPassword = () => {
 
             <button
               type="button"
-              onClick={handleCancel}
+              onClick={handleClear}
               className="w-full py-2 rounded-lg mt-3 text-gray-700 border border-gray-400 hover:bg-gray-100 font-medium transition"
             >
               Cancel
