@@ -5,6 +5,10 @@ import {
   faSearch,
   faBell,
   faUserCircle,
+  faUser,
+  faKey,
+  faEdit,
+  faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { Button, Input } from '../../Forms';
 import { logout } from '../../redux/slices/userSlice';
@@ -23,8 +27,12 @@ import { clearNotification } from '../../redux/slices/notificationsSlice';
 
 const SideDrawer = () => {
   const user = useSelector((state) => state.user?.user);
-  const notifications = useSelector((state) => state.notifications.notificationsByUser);
-  const chatAllUsers = useSelector((state) => state.chatsAllUser?.chatAllUsers || []);
+  const notifications = useSelector(
+    (state) => state.notifications.notificationsByUser
+  );
+  const chatAllUsers = useSelector(
+    (state) => state.chatsAllUser?.chatAllUsers || []
+  );
   const selectedUser = useSelector((state) => state.selectedUser?.selectedUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,7 +49,8 @@ const SideDrawer = () => {
     message: '',
     type: 'success',
   });
-  const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
+  const [showNotificationDropdown, setShowNotificationDropdown] =
+    useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showProfileCard, setShowProfileCard] = useState(false);
   const [showSearchSidebar, setShowSearchSidebar] = useState(false);
@@ -116,11 +125,11 @@ const SideDrawer = () => {
   };
 
   const handleResetClick = () => {
-    navigate('/reset-password')
-  }
+    navigate('/reset-password');
+  };
   const handleUpdateProfileClick = () => {
-    navigate('/edit-profile')
-  }
+    navigate('/edit-profile');
+  };
 
   const createChat = async (user) => {
     try {
@@ -157,7 +166,10 @@ const SideDrawer = () => {
   }, []);
 
   // Calculate total unread count
-  const totalUnreadCount = Object.values(notifications || {}).reduce((acc, count) => acc + count, 0);
+  const totalUnreadCount = Object.values(notifications || {}).reduce(
+    (acc, count) => acc + count,
+    0
+  );
 
   // Clear notification for a user when their chat is opened
   useEffect(() => {
@@ -169,7 +181,11 @@ const SideDrawer = () => {
   // Render notification dropdown items
   const renderNotificationItems = () => {
     if (!notifications || Object.keys(notifications).length === 0) {
-      return <div className="px-4 py-2 text-gray-700 text-sm">No new notifications</div>;
+      return (
+        <div className="px-4 py-2 text-gray-700 text-sm">
+          No new notifications
+        </div>
+      );
     }
     return Object.entries(notifications).map(([userId, count]) => {
       const user = chatAllUsers.find((u) => u._id === userId);
@@ -246,24 +262,40 @@ const SideDrawer = () => {
               onClick={toggleProfileDropdown}
             />
             {showProfileDropdown && (
-              <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg py-2 z-50">
+              <div className="absolute right-0 mt-2 w-56 bg-white rounded shadow-lg py-2 z-50">
                 <Button
-                  btnName="Profile"
+                  btnName={
+                    <span className="flex items-center gap-2">
+                      <FontAwesomeIcon icon={faUser} /> Profile
+                    </span>
+                  }
                   btnClass="block w-full text-left px-4 py-2 hover:bg-gray-100"
                   onClick={handleProfileClick}
                 />
                 <Button
-                  btnName="Reset Password"
+                  btnName={
+                    <span className="flex items-center gap-2">
+                      <FontAwesomeIcon icon={faKey} /> Reset Password
+                    </span>
+                  }
                   btnClass="block w-full text-left px-4 py-2 hover:bg-gray-100"
                   onClick={handleResetClick}
                 />
                 <Button
-                  btnName="Update Profile"
+                  btnName={
+                    <span className="flex items-center gap-2">
+                      <FontAwesomeIcon icon={faEdit} /> Update Profile
+                    </span>
+                  }
                   btnClass="block w-full text-left px-4 py-2 hover:bg-gray-100"
                   onClick={handleUpdateProfileClick}
                 />
                 <Button
-                  btnName="Logout"
+                  btnName={
+                    <span className="flex items-center gap-2 text-red-600">
+                      <FontAwesomeIcon icon={faSignOutAlt} /> Logout
+                    </span>
+                  }
                   btnClass="block w-full text-left px-4 py-2 hover:bg-gray-100"
                   onClick={handleLogoutClick}
                 />

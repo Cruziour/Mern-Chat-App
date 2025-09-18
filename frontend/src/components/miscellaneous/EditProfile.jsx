@@ -1,25 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { updateUserService } from '../../services';
 import { useNavigate } from 'react-router-dom';
+import SideDrawer from './SideDrawer';
+import { FaHome } from 'react-icons/fa';
 
 const EditProfile = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm();
+    formState: { errors, isValid, isSubmitting },
+    reset,
+  } = useForm({
+    mode: 'onChange',
+  });
 
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    console.log('Form Data:', data);
     const formData = new FormData();
     formData.append('name', data.name);
     if (data.image && data.image[0]) {
       formData.append('image', data.image[0]);
     }
-    console.log('FormData ready to send:', formData);
     await serviceUpdateUser(formData);
   };
 
@@ -28,80 +31,112 @@ const EditProfile = () => {
       const response = await updateUserService(formData);
       if (response.statusCode === 201) {
         alert('Update Profile Successfully ✅');
-
-        // Save updated user to localStorage
-        let user = JSON.parse(localStorage.getItem('user')) || {};
-        user.name = response.data.name;
-        user.pic = response.data.pic;
-        localStorage.setItem('user', JSON.stringify(user));
-
         setTimeout(() => {
           navigate('/chatpage');
-        }, 2000);
+        }, 1500);
       }
     } catch (error) {
       alert(error.message);
     }
   };
 
-  const handleCancelClick = () => {
-    navigate('/chatpage');
+  const handleClearClick = () => {
+    reset();
   };
 
+  // ❌ disable scrolling globally while this component is active
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-200">
-      <div className="max-w-md w-full p-6 shadow-lg rounded-2xl bg-white border border-gray-300 text-black">
-        <h2 className="text-2xl font-bold mb-4 text-center">Edit Profile</h2>
+    <>
+      <SideDrawer />
+      <div className=" h-screen bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 p-4">
+        <button
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg  text-black font-medium hover:bg-gray-200 transition shadow-md"
+        >
+          <FaHome className="text-lg" />
+          Home
+        </button>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Name Input */}
-          <div>
-            <label className="block mb-1 font-medium">Name</label>
-            <input
-              type="text"
-              {...register('name', { required: 'Name is required' })}
-              className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your name"
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm">{errors.name.message}</p>
-            )}
+        <div className="flex justify-center pt-[10vh]">
+          <div className="max-w-md w-full h-[50vh] flex flex-col justify-between p-8 shadow-2xl rounded-2xl bg-white border border-gray-200">
+            <h2 className="text-2xl font-bold text-center text-gray-800">
+              Edit Profile
+            </h2>
+
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col flex-1 justify-center gap-5"
+            >
+              {/* Name Input */}
+              <div>
+                <label className="block mb-2 font-semibold text-gray-700">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  {...register('name', { required: 'Name is required' })}
+                  className="w-full p-3 border border-black text-black rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                  placeholder="Enter your name"
+                />
+                {errors.name && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.name.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Image Input */}
+              <div>
+                <label className="block mb-2 font-semibold text-gray-700">
+                  Profile Image
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  {...register('image', { required: 'Image is required' })}
+                  className="w-full p-3 border border-black text-black rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                />
+                {errors.image && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.image.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-4 mt-auto">
+                <button
+                  type="submit"
+                  disabled={!isValid || isSubmitting}
+                  className={`flex-1 p-3 rounded-xl font-semibold transition ${
+                    !isValid || isSubmitting
+                      ? 'bg-gray-400 text-white cursor-not-allowed'
+                      : 'bg-black text-white hover:bg-gray-900'
+                  }`}
+                >
+                  {isSubmitting ? 'Updating...' : 'Update'}
+                </button>
+
+                <button
+                  type="button"
+                  className="flex-1 border-2 border-black text-black p-3 rounded-xl hover:bg-gray-100 transition font-semibold"
+                  onClick={handleClearClick}
+                >
+                  Clear
+                </button>
+              </div>
+            </form>
           </div>
-
-          {/* Image Input */}
-          <div>
-            <label className="block mb-1 font-medium">Profile Image</label>
-            <input
-              type="file"
-              accept="image/*"
-              {...register('image', { required: 'Image is required' })}
-              onChange={(e) => {
-                register('image').onChange(e);
-              }}
-              className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors.image && (
-              <p className="text-red-500 text-sm">{errors.image.message}</p>
-            )}
-          </div>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition"
-          >
-            Update
-          </button>
-          <button
-            type="button"
-            className="w-full border-2 text-black p-2 rounded-lg hover:bg-blue-100 transition"
-            onClick={handleCancelClick}
-          >
-            Cancel
-          </button>
-        </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
